@@ -1,0 +1,17 @@
+
+fulldata<-read.table("household_power_consumption.txt",sep=";",head=TRUE,stringsAsFactors=FALSE, dec=".")
+fulldata$datetime<-as.POSIXlt(strptime(paste(fulldata$Date,fulldata$Time),"%d/%m/%Y %H:%M:%S"))
+fulldata$Date<-as.Date(strptime(fulldata$Date,"%d/%m/%Y"))
+datause<-fulldata[fulldata$Date>=as.Date(strptime("1/2/2007","%d/%m/%Y")) & fulldata$Date<=as.Date(strptime("2/2/2007","%d/%m/%Y")),]
+
+datause$Global_active_power<-as.numeric(datause$Global_active_power)
+
+datause$Sub_metering_1<-as.numeric(datause$Sub_metering_1)
+datause$Sub_metering_2<-as.numeric(datause$Sub_metering_2)
+png(filename="plot3.png",width=480,height=480)
+with(datause,{plot(datetime,Sub_metering_1,type="l",xlab="",ylab="Energy Sub Metering")
+  lines(datetime,Sub_metering_2,type="l",col="red")
+  lines(datetime,Sub_metering_3,type="l",col="blue")
+  })
+legend("topright",col=c("black","red","blue"),legend=c("sub_metering_1","sub_metering_2","sub_metering_3"),lty=1,lwd=2)
+dev.off()
